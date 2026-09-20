@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20 Casos de Uso: Jev & Função Pública</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen">
+
+    <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <div class="flex items-center space-x-3">
+                    <span class="bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">Andre Rocha</span>
+                    <span class="text-xs text-slate-400 font-mono">Powered by Jev (TypeSafe AI)</span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">Inteligência Probabilística na Administração Pública</h1>
+                <p class="text-sm text-slate-400 mt-1">20 Casos de Uso Transformadores: Decisões em 100ms, Custo Próximo de Zero e 0% de Alucinação.</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+                <button onclick="filterUseCases('all')" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white transition">Todos (20)</button>
+                <button onclick="filterUseCases('fundos')" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition">Fundos & Públicos</button>
+                <button onclick="filterUseCases('mobilidade')" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition">Mobilidade & Energia</button>
+                <button onclick="filterUseCases('triagem')" class="filter-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-700 text-slate-300 hover:bg-slate-600 transition">Triagem & Licenças</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+        
+        <!-- Barra de Pesquisa -->
+        <div class="mb-8">
+            <div class="relative max-w-md mx-auto">
+                <input type="text" id="searchInput" onkeyup="searchUseCases()" placeholder="Pesquisar por palavra-chave (ex: fundos, CP, faturas, fraude...)" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition">
+            </div>
+        </div>
+
+        <div id="gridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- 1. Triagem e Encaminhamento Automático -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#1 Triagem & Licenciamento</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">&lt;100ms</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Triagem e Encaminhamento de Requerimentos Municipais</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Análise paralela instantânea de milhares de pedidos digitais de licenças de obras ou certidões para validação de documentos obrigatórios e distribuição automática ao departamento competente.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Eliminação de filas de espera</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 2. Deteção Precoce de Fraude em Subsídios -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-md">#2 Fundos & Subsídios</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Risco em Massa</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Deteção de Anomalias em Candidaturas a Subsídios Estatais</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Scoring instantâneo de centenas de processos de apoio financeiro a empresas e cidadãos, identificando padrões de sobreposição de faturas ou incoerências financeiras sem atrasar os pagamentos legítimos.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Auditoria cirúrgica de fraude</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 3. Atendimento Omnicanal com Encaminhamento -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#3 Atendimento Digital</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Zero Alucinação</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Cérebro de Intenção para Assistentes Virtuais do Estado</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Em vez de conversas lentas com modelos de linguagem, o Jev categoriza instantaneamente o problema escrito pelo cidadão no portal e direciona-o para o procedimento legal exato ou balcão físico adequado.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Resolução de 1.º contacto</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 4. Gestão de Ocorrências Urbanas -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#4 Cidades Inteligentes</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Priorização Real</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Classificação de Ocorrências Municipais (Buracos, Pavimento, Saneamento)</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Avaliação imediata do grau de urgência e perigo de relatos fotográficos e textuais submetidos por munícipes, despachando automaticamente as equipas operacionais da autarquia.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Otimização de frotas municipais</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 5. Controlo de Conformidade em Concursos Públicos -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-md">#5 Contratação Pública</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">100% Determinístico</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Validação de Cadernos de Encargos e Propostas em Concursos</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Verificação paralela imediata de dezenas de alíneas legais nas propostas concorrentes a concursos públicos, gerando matrizes de exclusão/aceitação sem erros ou contenciosos.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Transparência e celeridade legal</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 6. Gestão de Fundos Comunitários (PT 2030 / PRR) -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-md">#6 Fundos Comunitários</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Scoring de Elegibilidade</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Avaliação de Elegibilidade em Massa para Fundos do PRR</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Classificação instantânea de milhares de candidaturas de investimento empresarial aos fundos europeus, cruzando rácios financeiros e metas ambientais com os critérios do aviso.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Absorção rápida de fundos UE</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 7. Auditoria de Despesas e Reembolsos Comunitários -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-md">#7 Fundos Comunitários</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Custo Mínimo</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Validação de Faturas e Justificativos de Despesa em Projetos</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Análise automatizada de volumes massivos de faturas submetidas por beneficiários de fundos comunitários, pontuando a conformidade fiscal e a elegibilidade da despesa em segundos.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Redução drástica de desvios financeiros</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 8. Monitorização de Marcos e Metas (Milestones) do PRR -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-md">#8 Fundos Públicos</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Previsão de Risco</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Painel Preditivo de Execução de Marcos e Metas Nacionais</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Avaliação contínua, através de folhas de cálculo preditivas em massa, da probabilidade de cumprimento dos prazos de dezenas de projetos de infraestruturas financiados pelo Estado e pela União Europeia.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Prevenção de perda de verbas</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 9. CP (Comboios de Portugal) - Gestão de Incidências e Linha -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="mobilidade">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-cyan-400 bg-cyan-950/80 px-2.5 py-1 rounded-md">#9 Mobilidade (CP)</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Tempo Real</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Encaminhamento de Avarias e Reclamações na CP</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Triagem instantânea de reportes de passageiros e alertas de material circulante, calculando a probabilidade de impacto severo na circulação das linhas ferroviárias nacionais.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Resposta rápida a atrasos e avarias</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 10. Carris / Transportes Urbanos - Otimização de Frota -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="mobilidade">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-cyan-400 bg-cyan-950/80 px-2.5 py-1 rounded-md">#10 Mobilidade (Carris)</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Decisão Dinâmica</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Gestão Dinâmica de Alocação de Autocarros em Horas de Ponta</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Processamento em paralelo de dados de tráfego, lotação de paragens e meteorologia para decidir em milissegundos o reforço de carreiras urbanas críticas.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Fluidez no transporte público</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 11. EDP / Gestão de Rede Elétrica - Triagem de Avarias -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="mobilidade">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-teal-400 bg-teal-950/80 px-2.5 py-1 rounded-md">#11 Energia (EDP/Redes)</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Zero Latência</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Priorização de Falhas de Energia e Cortes de Rede</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Avaliação imediata de milhares de avisos de interrupção de fornecimento elétrico cruzados com dados meteorológicos e infraestruturas críticas (hospitais, bombeiros), escalando equipas de intervenção.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Restabelecimento rápido de energia</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 12. Transição Energética - Licenciamento de Painéis Solares -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-teal-400 bg-teal-950/80 px-2.5 py-1 rounded-md">#12 Energia & Sustentabilidade</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Licenciamento Rápido</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Aprovação Automática de Pedidos de Autoconsumo Energético</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Validação instantânea de projetos de microprodução solar e injeção na rede, verificando conformidade técnica com portarias regulatórias num piscar de olhos.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Aceleração da descarbonização</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 13. Triagem de Pedidos de Apoio Social (Segurança Social) -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#13 Apoio Social</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Avaliação Justa</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Priorização de Processos de Emergência Social</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Análise imediata de pedidos de abonos, RSI ou subsídios de emergência, calculando o risco de vulnerabilidade e determinando o escalão de atendimento urgente.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Apoio imediato a quem mais precisa</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 14. Gestão de Processos Judiciais e Priorização nos Tribunais -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#14 Justiça</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Ranquear Urgências</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Triagem e Atribuição de Processos Urgentes em Tribunais</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Classificação automática de petições iniciais e requerimentos judiciais com base na matéria, prazos legais e risco de prescrição, distribuindo de forma equilibrada por magistrados.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Combustível contra a morosidade</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 15. Controlo de Fronteiras e Alfândegas (PSP / GNR / Autoridade Tributária) -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#15 Segurança & Alfândegas</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Baixa Latência</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Análise de Risco de Cargas e Passageiros em Portos e Aeroportos</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Avaliação probabilística instantânea de declarações de importação e perfis de risco em bagagens/mercadorias para inspeção física direcionada sem reter o fluxo legal.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Segurança aeroportuária fluida</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 16. Monitorização de Emissões Industriais e Ambiente -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="mobilidade">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-teal-400 bg-teal-950/80 px-2.5 py-1 rounded-md">#16 Ambiente & Indústria</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Alertas em Paralelo</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Sinalização de Incumprimentos Ambientais em Licenças Industriais</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Cruzamento automatizado em tempo real de dados de sensores de poluição com os limites legais de descargas de fábricas, emitindo probabilidades de coima imediata.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Proteção ambiental ativa</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 17. Controlo de Faturação da Administração Pública (Tesouraria) -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-md">#17 Tesouraria Pública</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Conformidade Fiscal</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Validação em Lote de Faturas a Fornecedores do Estado</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Análise simultânea de milhares de faturas submetidas por fornecedores públicos contra contratos validados, detetando duplicados ou discrepâncias de IVA instantaneamente.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Eficiência financeira do erário público</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 18. Gestão e Atribuição de Habitação Pública e Social -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#18 Habitação</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Ranking Transparente</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Pontuação e Ordenação de Candidaturas a Habitação Social</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Avaliação probabilística e imparcial de critérios socioeconómicos de agregados familiares para atribuição de fogos municipais, eliminando suspeitas de favoritismo.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Justiça na distribuição habitacional</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 19. Auditoria de Contratos de Manutenção de Infraestruturas -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="fundos">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-amber-400 bg-amber-950/80 px-2.5 py-1 rounded-md">#19 Infraestruturas</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Gestão de Risco</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Avaliação de Relatórios de Inspeção de Pontes e Estradas</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Processamento em massa de relatórios técnicos de manutenção rodoviária para pontuar o risco estrutural e determinar quais as intervenções prioritárias nas estradas do país.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Segurança rodoviária preventiva</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+            <!-- 20. Otimização de Empregos e Ofertas no IEFP -->
+            <div class="use-case-card bg-slate-800 border border-slate-700/80 rounded-2xl p-6 flex flex-col justify-between hover:border-indigo-500/50 transition duration-300 shadow-xl" data-category="triagem">
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold text-indigo-400 bg-indigo-950/80 px-2.5 py-1 rounded-md">#20 Emprego & Formação</span>
+                        <span class="text-xs text-emerald-400 bg-emerald-950/50 px-2 py-0.5 rounded">Matchmaking Instantâneo</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Emparelhamento Probabilístico de Desempregados com Ofertas de Emprego</h3>
+                    <p class="text-sm text-slate-300 leading-relaxed mb-4">Avaliação imediata e paralela de competências de candidatos nas bases de dados do IEFP face a novas vagas corporativas, sugerindo percursos de reconversão profissional.</p>
+                </div>
+                <div class="border-t border-slate-700/60 pt-3 mt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Impacto: Redução do desemprego de longa duração</span>
+                    <span class="font-mono text-indigo-300">Jev Integration</span>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 border-t border-slate-700 mt-16 py-8 text-center text-sm text-slate-400">
+        <p>Modelo de Decisão Baseado em Jev (TypeSafe AI)</p>
+    </footer>
+
+    <script>
+        // Função para filtrar os cartões por categoria
+        function filterUseCases(category) {
+            const cards = document.querySelectorAll('.use-case-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-indigo-600', 'text-white');
+                btn.classList.add('bg-slate-700', 'text-slate-300');
+            });
+            event.target.classList.remove('bg-slate-700', 'text-slate-300');
+            event.target.classList.add('bg-indigo-600', 'text-white');
+
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Função de pesquisa em tempo real
+        function searchUseCases() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.use-case-card');
+
+            cards.forEach(card => {
+                const text = card.innerText.toLowerCase();
+                if (text.includes(input)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>

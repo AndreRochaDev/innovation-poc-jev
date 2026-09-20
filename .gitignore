@@ -1,0 +1,40 @@
+# ── Secrets: nunca commitar ─────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ── Logs ────────────────────────────────────────────────
+logs/
+*.log
+
+# ── .NET ────────────────────────────────────────────────
+bin/
+obj/
+out/
+publish/
+.vs/
+TestResults/
+*.user
+*.suo
+
+# ── Node / Vite ─────────────────────────────────────────
+node_modules/
+frontend/dist/
+frontend/dist-ssr/
+frontend/.vite/
+*.local
+
+# ── OS / editores ───────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*~
+
+# ── Docker ──────────────────────────────────────────────
+.docker/

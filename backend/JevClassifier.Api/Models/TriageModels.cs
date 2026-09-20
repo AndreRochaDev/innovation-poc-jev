@@ -57,11 +57,24 @@ public class JevRequest
     public Dictionary<string, JevQuestion> Questions { get; set; } = new();
 }
 
+/// <summary>
+/// Formato nativo TypeSafe (ver docs.typesafe.ai):
+/// Choice -> { choice, confidence, probabilities },
+/// Score  -> { score, confidence, legend, probabilities[level-as-string] },
+/// Noul   -> { noul } (número único 0-1, SEM value/probability).
+/// Mantêm-se Value/Probability/Scores como fallback para outros gateways.
+/// </summary>
 public class JevAnswer
 {
+    public string? Type { get; set; }
+    public string? Choice { get; set; }
+    public double? Confidence { get; set; }
+    public Dictionary<string, double>? Probabilities { get; set; }
+    public double? Noul { get; set; }
+    public double? Score { get; set; }
+    public Dictionary<string, System.Text.Json.JsonElement>? Legend { get; set; }
     public string? Value { get; set; }
     public double? Probability { get; set; }
-    public Dictionary<string, double>? Probabilities { get; set; }
     public Dictionary<string, double>? Scores { get; set; }
 }
 

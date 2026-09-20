@@ -8,12 +8,17 @@ public class TriageService
     private readonly IJevClient _jev;
     private readonly JevOptions _jevOpts;
     private readonly TriageOptions _triage;
+    private readonly ILogger<TriageService> _logger;
 
-    public TriageService(IJevClient jev, IOptions<JevOptions> jevOpts, IOptions<TriageOptions> triage)
+    // Níveis do Score "frustracao" (ordem = índice 0..2, ver docs TypeSafe).
+    private static readonly string[] FrustracaoLevels = ["Calmo", "Frustrado", "Muito revoltado"];
+
+    public TriageService(IJevClient jev, IOptions<JevOptions> jevOpts, IOptions<TriageOptions> triage, ILogger<TriageService> logger)
     {
         _jev = jev;
         _jevOpts = jevOpts.Value;
         _triage = triage.Value;
+        _logger = logger;
     }
 
     public async Task<TriageResultDto> TriageAsync(string channel, string rawText, CancellationToken ct)
@@ -40,13 +45,23 @@ public class TriageService
             ["urgente"] = new JevQuestion
             {
                 Type = "noul",
-                Instructions = "Requer intervenção urgente? Perigo, saúde pública, corte de serviço essencial, dano ativo."
+                Instructions = "Esta reclamação requer intervenção urgente por parte do município?",
+                Criteria = new Dictionary<string, string>
+                {
+                    ["true"] = "Perigo para pessoas, risco de saúde pública, corte de serviço essencial, dano ativo a decorrer",
+                    ["false"] = "Incómodo, sugestão de melhoria ou falha sem perigo nem corte essencial"
+                }
             },
             ["frustracao"] = new JevQuestion
             {
                 Type = "score",
                 Instructions = "Qual o nível de frustração do munícipe?",
-                Criteria = new[] { "Calmo", "Frustrado", "Muito revoltado" }
+                Criteria = new[]
+                {
+                    "Calmo, apenas a expor os factos",
+                    "Frustrado mas cordial, já reportou antes ou mostra impaciência",
+                    "Muito revoltado, linguagem forte ou a exigir resolução imediata"
+                }
             },
             ["prioridade"] = new JevQuestion
             {
@@ -64,22 +79,60 @@ public class TriageService
         var jev = await _jev.EvaluateAsync(state, questions, ct);
         var answers = jev.Answers ?? jev.Results ?? new Dictionary<string, JevAnswer>();
 
-        string Str(string k) => answers.TryGetValue(k, out var a) ? (a.Value ?? "") : "";
-        double Prob(string k) => answers.TryGetValue(k, out var a) ? (a.Probability ?? 0) : 0;
+        // --- Choice: campo nativo é "choice" (com "confidence" e "probabilities") ---
+        string ChoiceOf(string k, string fallback)
+        {
+            if (!answers.TryGetValue(k, out var a) || a is null) return fallback;
+            if (!string.IsNullOrWhiteSpace(a.Choice)) return a.Choice!;
+            if (!string.IsNullOrWhiteSpace(a.Value)) return a.Value!;
+            return fallback;
+        }
 
-        var dept = Str("departamento");
-        if (string.IsNullOrWhiteSpace(dept)) dept = "outro";
-        var deptProbs = answers.TryGetValue("departamento", out var dA) ? (dA.Probabilities ?? new()) : new();
+        Dictionary<string, double> ProbsOf(string k)
+        {
+            if (!answers.TryGetValue(k, out var a) || a is null) return new();
+            // Score usa chaves "0","1",... ; Choice usa nomes das opções.
+            return a.Probabilities ?? a.Scores ?? new();
+        }
 
-        var urgVal = Str("urgente").ToLowerInvariant();
-        var urgProb = Prob("urgente");
-        bool urgente = urgVal is "yes" or "true" or "sim" || urgProb >= 0.5;
+        double ConfidenceOf(string k, Dictionary<string, double> probs)
+        {
+            if (probs.Count > 0) return probs.Values.Max();
+            if (!answers.TryGetValue(k, out var a) || a is null) return 0;
+            return a.Confidence ?? a.Probability ?? a.Noul ?? a.Score ?? 0;
+        }
 
-        var frust = Str("frustracao");
-        if (string.IsNullOrWhiteSpace(frust)) frust = "Frustrado";
-        var frustProbs = answers.TryGetValue("frustracao", out var fA) ? (fA.Scores ?? fA.Probabilities) : null;
+        var dept = ChoiceOf("departamento", "outro");
+        var deptProbs = ProbsOf("departamento");
+        var deptConf = ConfidenceOf("departamento", deptProbs);
 
-        var prio = Str("prioridade");
+        // --- Noul: número único "noul" 0-1 (probabilidade de "sim") ---
+        double noul = 0;
+        if (answers.TryGetValue("urgente", out var u) && u is not null)
+            noul = u.Noul ?? u.Probability ?? 0;
+        bool urgente = noul >= 0.5;
+
+        // --- Score: posição "score" sobre os níveis 0..N; arredonda p/ nível ---
+        double score = 1;
+        if (answers.TryGetValue("frustracao", out var f) && f is not null && f.Score.HasValue)
+            score = f.Score.Value;
+        int levelIdx = Math.Clamp((int)Math.Round(score, MidpointRounding.AwayFromZero), 0, FrustracaoLevels.Length - 1);
+        var frust = FrustracaoLevels[levelIdx];
+        Dictionary<string, double>? frustProbs = null;
+        var frustRaw = ProbsOf("frustracao");
+        if (frustRaw.Count > 0)
+        {
+            frustProbs = new Dictionary<string, double>();
+            for (int i = 0; i < FrustracaoLevels.Length; i++)
+                if (frustRaw.TryGetValue(i.ToString(), out var p))
+                    frustProbs[FrustracaoLevels[i]] = Math.Round(p, 3);
+        }
+
+        _logger.LogInformation(
+            "Triage canal={Canal} dept={Dept} (conf {DConf}) urgente={U} (noul {N}) frustracao={F} (score {S})",
+            channel, dept, Math.Round(deptConf, 3), urgente, Math.Round(noul, 3), frust, Math.Round(score, 2));
+
+        var prio = ChoiceOf("prioridade", urgente ? "P1" : "P2");
         if (prio is not ("P1" or "P2" or "P3"))
             prio = urgente ? "P1" : "P2"; // fallback rule
 
@@ -90,14 +143,13 @@ public class TriageService
             _ => ("20 dias", TeamFor(dept))
         };
 
-        var topProb = deptProbs.Count > 0 ? deptProbs.Values.Max() : Prob("departamento");
         var deptLabel = _triage.Departments.FirstOrDefault(d => d.Key == dept)?.Label_pt ?? dept;
 
         return new TriageResultDto(
-            dept, deptLabel, Math.Round(topProb, 3), deptProbs,
-            urgente, Math.Round(urgProb, 3), frust, frustProbs,
+            dept, deptLabel, Math.Round(deptConf, 3), deptProbs,
+            urgente, Math.Round(noul, 3), frust, frustProbs,
             prio, sla, equipa,
-            topProb < 0.6, _jevOpts.Model, channel);
+            deptConf < 0.6, _jevOpts.Model, channel);
     }
 
     private string TeamFor(string dept) =>
